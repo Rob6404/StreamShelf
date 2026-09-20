@@ -7,8 +7,8 @@ export default function HomeScreen() {
     
 
     return (
-        <AsyncStateView viewState={ viewState }>
-            <Text>We need to inject the rails here from the homescreen data</Text>
-        </AsyncStateView>
+        <AsyncStateView viewState={ viewState }
+            loadedChildren={ <Text>We need to inject the rails here from the homescreen data </Text> }
+        />
     );
 }

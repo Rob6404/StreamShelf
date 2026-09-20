@@ -10,7 +10,7 @@ Going for unidirectional data flow by separating presentation, domain, and data:
 - The domain layer should only have access to the data layer.
 - Presentation should never touch files in the data layer directly.
 
-In presentation, screens cover full views, and components are extracted wherever a view is reusable.
+In presentation, screens cover full views, and components are extracted wherever a view is reusable. expo router is used, and the `src/app` folder just hold routes that extract routing data, and import from `presentation/screens` for the full views.
 
 Given time constraints, no built in tvOS/Fire TV, and limited number of application screens, no tab bar navigation will be used. Instead an inline link will exist on homescreen to navigate to the MyList. In a production environment, MyList would live in a tab control, and we'd use native-tabs for the mobile platforms, JS tabs for web, and need more research for table top devices (Fire TV, smart TV etc).
 
@@ -26,6 +26,6 @@ This centralizes the states that all the full views go through, since they're pr
 
 ## Data source
 
-`catalogDataSource` is hardcoded for now.
+`CatalogDataSource` simulates a quarter second network delay with setTimeout. It also simulates a 1/4 network crash with a Math.random() arithmetic getting a number from 1-4. If 4, it is considered a failure, and the Promise is rejected. Otherwise, it is returned. In either case of failure or success, we always build the cache out. In real world, you'd only build cache on success, but this is an in memory datasource that is hardcoded. Also, it will be used in a singleton pattern, exporting an instance of the class, not the class itself since this is supposed to be a static data. Production would have data that could be modified, so caching would be a much shorter lifecycle if used, as opposed to per session here.
 
 If the goal of this take-home were to show full-stack work, I'd have made this a REST API call instead — potentially with Docker Compose spinning up a relational database (e.g. Postgres) and a Node.js REST API with a formal contract. The model from that contract could then be shared with the frontend as shared code, which is one of the real benefits of a Node.js backend. That's a direction I'd genuinely enjoy building out, but I know it's beside the point of a project geared toward CTV + React Native. :)
