@@ -1,5 +1,5 @@
 import { catalogDataSource } from "@/data/catalog/CatalogDataSource";
-import { Rail } from "@/types/Rail";
+import { Rail } from "@/types/Rail.model";
 import { ViewState } from "@/types/ViewState";
 import { useEffect, useState } from "react";
 
@@ -25,6 +25,7 @@ export function useHomeScreen() {
         }
     };
 
+    // Screen data is static, so useEffect doesn't need to always loadData(); that's why we pass empty args.
     useEffect(() => {
         loadData();
     }, []);

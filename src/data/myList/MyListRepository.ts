@@ -1,0 +1,21 @@
+import { MyListTitle } from "@/types/MyListTitle";
+import { AsyncStorageProvider } from "../storage/AsyncStorageProvider";
+
+export class MyListRepository {
+    private storageProvider = new AsyncStorageProvider();
+    private keyPrefix = "myList";
+
+    async getMyList(): Promise<MyListTitle[]> {
+        const keys = await this.storageProvider.getAllKeys(this.keyPrefix);
+        const myList: MyListTitle[] = await this.storageProvider.getAll(keys);
+        return myList;
+    }
+
+    async addTitle(myListTitle: MyListTitle) {
+        await this.storageProvider.save(this.keyPrefix + myListTitle.id, myListTitle);
+    }
+
+    async deleteTitle(id: number) {
+        await this.storageProvider.delete(this.keyPrefix + id)
+    }
+}

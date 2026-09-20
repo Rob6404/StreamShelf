@@ -1,4 +1,4 @@
-import { Rail } from "@/types/Rail";
+import { Rail } from "@/types/Rail.model";
 import { Title } from "@/types/Title";
 import { DataSource } from "../DataSource";
 
