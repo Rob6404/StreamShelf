@@ -17,11 +17,11 @@ class CatalogDataSource implements DataSource<Rail[]> {
                 this.buildCache();
 
                 if (this.isError()) {
+                    console.log("we got the error");
                     reject(new Error("Unable to load catalog"));
                 }
+                resolve(this.cache);
             }, 250);
-
-            resolve(this.cache);
         });
     }
 

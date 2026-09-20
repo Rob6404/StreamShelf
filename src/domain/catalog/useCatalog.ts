@@ -1,6 +1,6 @@
-import { catalogDataSource } from "@/data/catalog/catalogDataSource";
+import { catalogDataSource } from "@/data/catalog/CatalogDataSource";
 import { Rail } from "@/types/Rail";
-import { ViewState } from "@/types/viewState";
+import { ViewState } from "@/types/ViewState";
 import { useEffect, useState } from "react";
 
 export function useHomeScreen() {
@@ -14,6 +14,7 @@ export function useHomeScreen() {
             const rails = await catalogDataSource.get();
             setHomeScreen(rails);
 
+            console.log(`rails: ${rails}`);
             if (rails.length > 0) {
                 setViewState(ViewState.Loaded);
             } else {

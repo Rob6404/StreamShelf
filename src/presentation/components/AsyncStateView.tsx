@@ -1,9 +1,9 @@
-import { ViewState } from "@/types/viewState";
+import { ViewState } from "@/types/ViewState";
 import { ReactNode } from "react";
 import { ActivityIndicator, Text } from "react-native";
 
-export default function AsyncStateView(viewState: ViewState, children: () => ReactNode) {    
-
+export default function AsyncStateView({ viewState, children }: { viewState: ViewState; children: ReactNode }) {    
+    console.log(viewState);
     switch (viewState) {
         case ViewState.Loading:
             return (
