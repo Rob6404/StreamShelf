@@ -36,14 +36,14 @@ class CatalogDataSource implements DataSource<Rail[]> {
             },
             {
                 id: 2, title: "Here comes Halloween", titles: [
-                    { id: 3, description: "Jack is back", logo: "https://static.wikia.nocookie.net/disney/images/0/06/Profile_-_Jack_Skellington.jpeg/revision/latest?cb=20190316145716", metaData: { createdAt: new Date(-20000) } },
+                    { id: 3, description: "Jack is back", logo: "https://static.wikia.nocookie.net/disney/images/0/06/Profile_-_Jack_Skellington.jpeg", metaData: { createdAt: new Date(-20000) } },
                     { id: 4, description: "Don't watch the tape", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQg4u_47yevbNFLW4PPvuLc_Df0khWiIvKmnot84FPKQmpMaeB1rZUfVRU&s=10", metaData: { createdAt: new Date(-30000) } }
                 ]
             },
             {
                 id: 3, title: "Blizzard makes a comeback", titles: [
-                    { id: 5, description: "All hail the queen of blades", logo: "https://upload.wikimedia.org/wikipedia/en/3/33/Sarah_Kerrigan_%28StarCraft%29_in_Zerg_form.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original", metaData: { createdAt: new Date(-40000) } },
-                    { id: 6, description: "E.T.C.", logo: "https://static.wikia.nocookie.net/wowwiki/images/7/7c/Tauren_Marine1.jpg/revision/latest/scale-to-width-down/550?cb=20080402031706", metaData: { createdAt: new Date(-50000) } }
+                    { id: 5, description: "All hail the queen of blades", logo: "https://static.wikia.nocookie.net/starcraft/images/b/b6/InfestedKerrigan_SC2_Art4.jpg", metaData: { createdAt: new Date(-40000) } },
+                    { id: 6, description: "E.T.C.", logo: "https://static.wikia.nocookie.net/wowwiki/images/7/7c/Tauren_Marine1.jpg", metaData: { createdAt: new Date(-50000) } }
                 ]
             }
         ];

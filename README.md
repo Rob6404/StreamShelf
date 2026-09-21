@@ -2,6 +2,10 @@
 
 Take-home project for The Weather Channel.
 
+## Getting Started
+
+To run the app, you must first install the dependencies `npm install`. afterwards you can start the expo server with `npx expo start`. if you intend to use an android tv simulator, you must `set EXPO_TV=1` on windows, followed by a prebuild with `npx expo prebuild --clean`, then you can run with `npx expo run:android` if you have an android tv emulator running.
+
 ## Architecture
 
 Going for unidirectional data flow by separating presentation, domain, and data:
@@ -12,7 +16,11 @@ Going for unidirectional data flow by separating presentation, domain, and data:
 
 In presentation, screens cover full views, and components are extracted wherever a view is reusable. Expo Router is used, and the `src/app` folder just holds routes that handle routing, and import from `presentation/screens` for the full views.
 
-Given time constraints, no built-in tvOS/Fire TV testing, and a limited number of application screens, no tab bar navigation will be used. Instead, an inline link will exist on the home screen to navigate to My List. In a production environment, My List would live in a tab control, and we'd use native tabs for mobile platforms, JS tabs for web, and need more research for set-top devices (Fire TV, smart TVs, etc.).
+Given time constraints, no physical tvOS/Android TV testing, and a limited number of application screens, no tab bar navigation will be used. Instead, an button will exist on the home screen to navigate to My List. In a production environment, My List would live in a tab control, and we'd use native tabs for mobile platforms, JS tabs for web, and need more research for set-top devices (Fire TV, smart TVs, etc.). 
+
+I added focus styling to show what `Title` is focused in the `Rail`, which can easily be tested with android TV emulators.
+
+My list just shows all the images of the `Title`'s added to my list. It has no other functionality.
 
 ## AsyncStateView
 
@@ -38,10 +46,11 @@ Since the goal of this project is to show what I can do, the patterns I rely on,
 - **Talking through architecture abstractly, without generating code.** I described the general architecture I had in mind and explicitly asked it to stay abstract rather than write code — a unidirectional data flow, layers separated by responsibility, and reusable components extracted where it made sense.
 - **Cleaning up this README.** Technical writing is something I felt comfortable automating, so I used AI to help clean up formatting and wording here.
 - **Quick syntax and documentation lookups.** Occasionally I used it in place of drilling into official docs for quick, low-stakes questions — e.g., when to use camelCase versus PascalCase — where a quick AI summary answered the question without needing to dig through the full documentation.
+- **Final pass for outstanding issues, and requirements met** I fed the requirements to claude cowork, my git commit logs, as well as my project, and asked it to catch any gotchas, and verify requirments were completed. It found half a dozen minor issues that I cleaned up, which will show in the last set of commits I made on 9/21/2026.
 
-## TODO
+## Unit Testing
 
 - **Smoke testing** Need to give the full round on devices I have available (ios, android, and tvOS simulator)
 - **Remote control navigation/focus** Need to make reusable component for focusable title cards, and add/remove button on home screen, and title details
 - **Unit tests** Need to add unit tests. I can add around presentation layer easily. Tests for finding my list items, test for add/remove my list, and test for loading of home page
-- **Unit testing** If I had more time, I would move the string literals I'm using in unit tests to a constants file, instead of duplicate strings in unit test files, and the implementation classes.
+- **Unit testing** To show how the test suite would look, I made tests on the presentation layer for UI logic with asyncstateview. I also made a unit test on the domain layer with useTitleDetails to test business logic was firing as expected. If I had more time, I would add more tests, and I would move the string literals I'm using in unit tests to a constants file, instead of duplicate strings in unit test files, and the implementation classes.
