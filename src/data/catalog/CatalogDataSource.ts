@@ -16,6 +16,7 @@ class CatalogDataSource implements DataSource<Rail[]> {
 
                 if (this.isError()) {
                     reject(new Error("Unable to load catalog"));
+                    return;
                 }
 
                 this.buildCache();
