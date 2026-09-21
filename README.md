@@ -57,3 +57,9 @@ Since the goal of this project is to show what I can do, the patterns I rely on,
 - **Remote control navigation/focus** Need to make reusable component for focusable title cards, and add/remove button on home screen, and title details
 - **Unit tests** Need to add unit tests. I can add around presentation layer easily. Tests for finding my list items, test for add/remove my list, and test for loading of home page
 - **Unit testing** To show how the test suite would look, I made tests on the presentation layer for UI logic with asyncstateview. I also made a unit test on the domain layer with useTitleDetails to test business logic was firing as expected. If I had more time, I would add more tests, and I would move the string literals I'm using in unit tests to a constants file, instead of duplicate strings in unit test files, and the implementation classes.
+
+## TODO's
+- **Clean up linter errors, then warnings** Linter points out some clear issues with the `useEffect` and `loadData` approach I took. I'd look into solutions to lower re-renders if possible, extracting the sync from async part of load data. Not entirely sure, just need more time to be sure.
+- **More device testing** I only had access to web, physical android, and virtual android tv. Setting the rest up was not something I had time for, so testing on multiple devices is limited.
+- **UI** The UI is pretty bare bones. I would have liked to have centralized some colors, and typography like with material design. no in line styling if possible. I didn't have time to review this either.
+- **Code per platform** It really would have been nice to have mobile controls vs tv controls. That just wasn't something I was able to get to, or even begin digging into.  
