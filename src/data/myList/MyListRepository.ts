@@ -10,7 +10,9 @@ export class MyListRepository {
     }
 
     async getMyList(): Promise<MyListTitle[]> {
+        debugger;
         const keys = await this.storageProvider.getAllKeys(this.keyPrefix);
+        console.log(keys);
         const myList: MyListTitle[] = await this.storageProvider.getAll(keys);
         return myList;
     }

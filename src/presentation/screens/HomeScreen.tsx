@@ -14,10 +14,8 @@ export default function HomeScreen() {
                     {homeScreen?.map(rail => (
                         <View key={rail.id}>
                             <Rail key={rail.id} rail={rail} />
-                            <br />
                         </View>
                     ))}
-                    <br />
                     <Link href="/my-list">Go to My List!</Link>
                 </View>
             }

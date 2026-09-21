@@ -38,3 +38,9 @@ Since the goal of this project is to show what I can do, the patterns I rely on,
 - **Talking through architecture abstractly, without generating code.** I described the general architecture I had in mind and explicitly asked it to stay abstract rather than write code — a unidirectional data flow, layers separated by responsibility, and reusable components extracted where it made sense.
 - **Cleaning up this README.** Technical writing is something I felt comfortable automating, so I used AI to help clean up formatting and wording here.
 - **Quick syntax and documentation lookups.** Occasionally I used it in place of drilling into official docs for quick, low-stakes questions — e.g., when to use camelCase versus PascalCase — where a quick AI summary answered the question without needing to dig through the full documentation.
+
+## TODO
+
+- **Smoke testing** Need to give the full round on devices I have available (ios, android, and tvOS simulator)
+- **Remote control navigation/focus** Need to make reusable component for focusable title cards, and add/remove button on home screen, and title details
+- **Unit tests** Need to add unit tests. I can add around presentation layer easily. Tests for finding my list items, test for add/remove my list, and test for loading of home page

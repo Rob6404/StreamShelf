@@ -15,7 +15,6 @@ export default function MyListScreen() {
                             source={{ uri: title.logo }}
                             style={{ height: 100, width: 100 }}
                             />
-                            <br />
                         </View>
                     ))}
                 </View>
