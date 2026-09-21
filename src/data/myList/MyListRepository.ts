@@ -5,6 +5,10 @@ export class MyListRepository {
     private storageProvider = new AsyncStorageProvider();
     private keyPrefix = "myList";
 
+    async get(id: number): Promise<(MyListTitle | null)> {
+        return await this.storageProvider.get(this.keyPrefix + id);
+    }
+
     async getMyList(): Promise<MyListTitle[]> {
         const keys = await this.storageProvider.getAllKeys(this.keyPrefix);
         const myList: MyListTitle[] = await this.storageProvider.getAll(keys);

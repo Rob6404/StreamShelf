@@ -12,7 +12,7 @@ export default function HomeScreen() {
             loadedChildren={
                 <View>
                     {homeScreen?.map(rail => (
-                        <View>
+                        <View key={rail.id}>
                             <Rail key={rail.id} rail={rail} />
                             <br />
                         </View>

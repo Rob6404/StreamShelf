@@ -12,11 +12,11 @@ export default function AsyncStateView({ viewState, loadedChildren, loadingChild
             );
         case ViewState.Empty:
             return (
-                emptyChildren ?? <Text>Whadda we gonna do now Jim?</Text>
+                emptyChildren ?? <Text>EMPTY! Whadda we gonna do now Jim?</Text>
             );
         case ViewState.Error:
             return (
-                errorChildren ?? <Text>Now we really stuffed things up and dun broke the app! Game over man, game over!</Text>
+                errorChildren ?? <Text>ERROR! Now we really stuffed things up and dun broke the app! Game over man, game over!</Text>
             );
         case ViewState.Loaded:
             return loadedChildren;
