@@ -4,9 +4,6 @@ export class AsyncStorageProvider {
     async getAllKeys(keyPrefix: string): Promise<string[]> {
         const keys = await AsyncStorage.getAllKeys();
 
-        console.log(keys);
-        console.log(keyPrefix);
-
         return keys.filter(key => {
             return key.startsWith(keyPrefix);
         })
@@ -28,7 +25,6 @@ export class AsyncStorageProvider {
 
     async getAll<T>(keys: string[]): Promise<T[]> {
         const data = await AsyncStorage.multiGet(keys);
-        console.log(data);
         return data.flatMap(([, value]) => (value === null ? [] : (JSON.parse(value) as T)));
     }
 

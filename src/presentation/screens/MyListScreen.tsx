@@ -10,7 +10,7 @@ export default function MyListScreen() {
             loadedChildren={
                 <View>
                     {myList?.map(title => (
-                        <View>
+                        <View key={title.id}>
                             <Image
                             source={{ uri: title.logo }}
                             style={{ height: 100, width: 100 }}

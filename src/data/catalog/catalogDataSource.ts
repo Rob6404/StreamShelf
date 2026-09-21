@@ -15,7 +15,6 @@ class CatalogDataSource implements DataSource<Rail[]> {
             setTimeout(() => {
 
                 if (this.isError()) {
-                    console.log("we got the error");
                     reject(new Error("Unable to load catalog"));
                 }
 

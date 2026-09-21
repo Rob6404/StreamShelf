@@ -14,7 +14,6 @@ export function useHomeScreen() {
             const rails = await catalogDataSource.get();
             setHomeScreen(rails);
 
-            console.log(`rails: ${rails}`);
             if (rails.length > 0) {
                 setViewState(ViewState.Loaded);
             } else {

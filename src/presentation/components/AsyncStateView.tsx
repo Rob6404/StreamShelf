@@ -3,8 +3,7 @@ import { ReactNode } from "react";
 import { ActivityIndicator, Text } from "react-native";
 
 export default function AsyncStateView({ viewState, loadedChildren, loadingChildren, errorChildren, emptyChildren }: 
-    { viewState: ViewState; loadedChildren: ReactNode; loadingChildren?: ReactNode; errorChildren?: ReactNode; emptyChildren?: ReactNode }) {    
-    console.log(viewState);
+    { viewState: ViewState; loadedChildren: ReactNode; loadingChildren?: ReactNode; errorChildren?: ReactNode; emptyChildren?: ReactNode }) {
     switch (viewState) {
         case ViewState.Loading:
             return (
