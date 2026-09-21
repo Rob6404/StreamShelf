@@ -1,9 +1,11 @@
 import { MyListTitle } from "@/types/MyListTitle";
 import { AsyncStorageProvider } from "../storage/AsyncStorageProvider";
+import { StorageProvider } from "../storage/StorageProvider";
 
-export class MyListRepository {
-    private storageProvider = new AsyncStorageProvider();
+class MyListRepository {
     private keyPrefix = "myList";
+
+    constructor(private storageProvider: StorageProvider = new AsyncStorageProvider()) {}
 
     async get(id: number): Promise<(MyListTitle | null)> {
         return await this.storageProvider.get(this.keyPrefix + id);
@@ -23,3 +25,5 @@ export class MyListRepository {
         await this.storageProvider.delete(this.keyPrefix + id)
     }
 }
+
+export const myListRepository = new MyListRepository();

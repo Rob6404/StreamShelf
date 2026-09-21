@@ -1,9 +1,8 @@
 import { useHomeScreen } from "@/domain/catalog/useCatalog";
-import { Pressable, Text, View } from "react-native";
+import { Button, View } from "react-native";
 import AsyncStateView from "../components/AsyncStateView";
 import Rail from "../components/Rail";
-import { Link, useRouter } from "expo-router";
-import { Button } from "expo-router/build/react-navigation";
+import { useRouter } from "expo-router";
 
 export default function HomeScreen() {
     const router = useRouter();
@@ -18,7 +17,7 @@ export default function HomeScreen() {
                             <Rail key={rail.id} rail={rail} />
                         </View>
                     ))}
-                    <Button onPress={() => router.push("/my-list")}>Go to My List!</Button>
+                    <Button onPress={() => router.push("/my-list")} title="Go to My List!" />
                 </View>
             }
         />

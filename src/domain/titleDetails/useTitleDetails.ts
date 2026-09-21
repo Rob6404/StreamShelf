@@ -1,5 +1,5 @@
 import { catalogDataSource } from "@/data/catalog/CatalogDataSource";
-import { MyListRepository } from "@/data/myList/MyListRepository";
+import { myListRepository } from "@/data/myList/MyListRepository";
 import { Title } from "@/types/Title";
 import { ViewState } from "@/types/ViewState";
 import { useEffect, useState } from "react";
@@ -8,8 +8,6 @@ export function useTitleDetails(id: number) {
     const [titleDetails, setTitleDetails] = useState<(Title | null)>(null);
     const [viewState, setViewState] = useState<ViewState>(ViewState.Loading);
     const [isMyList, setIsMyList] = useState<boolean>(false);
-
-    const myListRepository = new MyListRepository();
 
     const loadData = async () => {
         setViewState(ViewState.Loading);

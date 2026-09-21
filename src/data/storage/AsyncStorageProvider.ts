@@ -1,5 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-export class AsyncStorageProvider {
+import { StorageProvider } from "./StorageProvider";
+
+export class AsyncStorageProvider implements StorageProvider {
     
     async getAllKeys(keyPrefix: string): Promise<string[]> {
         const keys = await AsyncStorage.getAllKeys();

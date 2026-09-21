@@ -1,4 +1,4 @@
-import { MyListRepository } from "@/data/myList/MyListRepository";
+import { myListRepository } from "@/data/myList/MyListRepository";
 import { MyListTitle } from "@/types/MyListTitle";
 import { Title } from "@/types/Title";
 import { ViewState } from "@/types/ViewState";
@@ -7,8 +7,6 @@ import { useEffect, useState } from "react";
 export function useMyList() {
     const [myList, setMyList] = useState<MyListTitle[]>([]);
     const [viewState, setViewState] = useState<ViewState>(ViewState.Loading);
-
-    const myListRepository = new MyListRepository();
     
     const loadData = async () => {
         setViewState(ViewState.Loading);
