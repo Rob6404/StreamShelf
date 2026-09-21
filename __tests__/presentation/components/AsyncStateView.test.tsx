@@ -1,4 +1,3 @@
-import HomeScreen from "@/app";
 import AsyncStateView from "@/presentation/components/AsyncStateView";
 import { ViewState } from "@/types/ViewState";
 import { render } from "@testing-library/react-native";

@@ -4,7 +4,10 @@ Take-home project for The Weather Channel.
 
 ## Getting Started
 
+Assumptions are you are using NPM + NPX, if using PNPM, or other dependency, replace the commands as fit.
 To run the app, you must first install the dependencies `npm install`. afterwards you can start the expo server with `npx expo start`. if you intend to use an android tv simulator, you must `set EXPO_TV=1` on windows, followed by a prebuild with `npx expo prebuild --clean`, then you can run with `npx expo run:android` if you have an android tv emulator running.
+
+To run unit tests in the root directory run `npm run test`.
 
 ## Architecture
 
