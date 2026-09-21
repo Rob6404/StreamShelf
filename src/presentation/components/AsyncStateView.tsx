@@ -7,7 +7,7 @@ export default function AsyncStateView({ viewState, loadedChildren, loadingChild
     switch (viewState) {
         case ViewState.Loading:
             return (
-                loadingChildren ?? <ActivityIndicator size="large" />
+                loadingChildren ?? <ActivityIndicator testID="loader" size="large" />
             );
         case ViewState.Empty:
             return (

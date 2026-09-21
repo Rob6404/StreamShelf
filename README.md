@@ -44,3 +44,4 @@ Since the goal of this project is to show what I can do, the patterns I rely on,
 - **Smoke testing** Need to give the full round on devices I have available (ios, android, and tvOS simulator)
 - **Remote control navigation/focus** Need to make reusable component for focusable title cards, and add/remove button on home screen, and title details
 - **Unit tests** Need to add unit tests. I can add around presentation layer easily. Tests for finding my list items, test for add/remove my list, and test for loading of home page
+- **Unit testing** If I had more time, I would move the string literals I'm using in unit tests to a constants file, instead of duplicate strings in unit test files, and the implementation classes.

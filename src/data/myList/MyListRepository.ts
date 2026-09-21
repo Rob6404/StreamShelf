@@ -2,7 +2,7 @@ import { MyListTitle } from "@/types/MyListTitle";
 import { AsyncStorageProvider } from "../storage/AsyncStorageProvider";
 import { StorageProvider } from "../storage/StorageProvider";
 
-class MyListRepository {
+export class MyListRepository {
     private keyPrefix = "myList";
 
     constructor(private storageProvider: StorageProvider = new AsyncStorageProvider()) {}
