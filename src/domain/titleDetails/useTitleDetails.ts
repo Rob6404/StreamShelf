@@ -1,21 +1,17 @@
 import { catalogDataSource } from "@/data/catalog/CatalogDataSource";
-import { myListRepository } from "@/data/myList/MyListRepository";
 import { Title } from "@/types/Title";
 import { ViewState } from "@/types/ViewState";
 import { useEffect, useState } from "react";
+import { useMyList } from "../myList/MyListContext";
 
 export function useTitleDetails(id: number) {
     const [titleDetails, setTitleDetails] = useState<(Title | null)>(null);
     const [viewState, setViewState] = useState<ViewState>(ViewState.Loading);
-    const [isMyList, setIsMyList] = useState<boolean>(false);
+    const myListContext = useMyList();
 
     const loadData = async () => {
-        setViewState(ViewState.Loading);
 
         try {
-            
-            const myListTitle = await myListRepository.get(id);
-            setIsMyList(myListTitle !== null);
 
             const title = (await catalogDataSource.get())
             .flatMap(rail => rail.titles)
@@ -35,8 +31,7 @@ export function useTitleDetails(id: number) {
     const addToMyList = async () => {
         try {
             if (titleDetails) {
-                await myListRepository.addTitle(titleDetails);
-                setIsMyList(true);
+                await myListContext.add(titleDetails);
             }
         } catch (error) {
             setViewState(ViewState.Error);
@@ -46,8 +41,7 @@ export function useTitleDetails(id: number) {
     const removeFromMyList = async () => {
         try {
             if (titleDetails) {
-                await myListRepository.deleteTitle(titleDetails.id);
-                setIsMyList(false);
+                await myListContext.remove(titleDetails.id);
             }
         } catch (error) {
             setViewState(ViewState.Error);
@@ -58,5 +52,5 @@ export function useTitleDetails(id: number) {
         loadData();
     }, []);
 
-    return { titleDetails, viewState, isMyList, addToMyList, removeFromMyList };
+    return { titleDetails, viewState, isMyList: myListContext.isInMyList(id), addToMyList, removeFromMyList };
 }

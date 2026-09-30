@@ -1,11 +1,14 @@
+import { MyListProvider } from "@/domain/myList/MyListContext";
 import { Stack } from "expo-router";
 
 export default function RootLayout() {
     return (
-        <Stack>
-            <Stack.Screen name="index" options={{ title: "Home" }} />
-            <Stack.Screen name="details/[id]" options={{ title: "Title Details" }} />
-            <Stack.Screen name="my-list" options={{ title: "My List"}} />
-        </Stack>
+        <MyListProvider>
+            <Stack>
+                <Stack.Screen name="index" options={{ title: "Home" }} />
+                <Stack.Screen name="details/[id]" options={{ title: "Title Details" }} />
+                <Stack.Screen name="my-list" options={{ title: "My List"}} />
+            </Stack>
+        </MyListProvider>
     );
 }

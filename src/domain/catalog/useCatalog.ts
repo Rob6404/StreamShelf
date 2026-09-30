@@ -8,7 +8,6 @@ export function useHomeScreen() {
     const [viewState, setViewState] = useState<ViewState>(ViewState.Loading);
 
     const loadData = async () => {
-        setViewState(ViewState.Loading);
 
         try {
             const rails = await catalogDataSource.get();

@@ -1,5 +1,6 @@
 import { catalogDataSource } from "@/data/catalog/CatalogDataSource";
 import { myListRepository } from "@/data/myList/MyListRepository";
+import { MyListProvider } from "@/domain/myList/MyListContext";
 import { useTitleDetails } from "@/domain/titleDetails/useTitleDetails";
 import { Rail } from "@/types/Rail.model";
 import { act, renderHook, waitFor } from "@testing-library/react-native";
@@ -17,7 +18,7 @@ test("test addToMyList calls repository.addTitle", async () => {
     jest.spyOn(myListRepository, "get").mockResolvedValue(null);
     const repositoryAddTitleSpy = jest.spyOn(myListRepository, "addTitle").mockResolvedValue();
 
-    const { result } = await renderHook(() => useTitleDetails(1));
+    const { result } = await renderHook(() => useTitleDetails(1), {wrapper: MyListProvider});
     await waitFor(() => expect(result.current.titleDetails).not.toBeNull());
 
     await act(async () => {
@@ -25,4 +26,5 @@ test("test addToMyList calls repository.addTitle", async () => {
     });
 
     expect(repositoryAddTitleSpy).toHaveBeenCalled();
+    expect(result.current.isMyList).toBe(true);
 });
