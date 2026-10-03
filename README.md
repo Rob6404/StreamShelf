@@ -2,6 +2,10 @@
 
 Take-home project for The Weather Channel.
 
+## Architectural Diagram
+
+![StreamShelf architecture](streamshelf-architecture.png)
+
 ## Getting Started
 
 Assumptions are you are using NPM + NPX, if using PNPM, or other dependency, replace the commands as fit.
