@@ -35,7 +35,8 @@
           "imageWidth": 76
         }
       ],
-      "@react-native-tvos/config-tv"
+      "@react-native-tvos/config-tv",
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true,
