@@ -4,12 +4,12 @@ import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-export default function Rail({rail}: {rail: RailModel}) {
+export default function Rail({rail, railIndex}: {rail: RailModel; railIndex: number}) {
     const router = useRouter();
     const [focusedId, setFocusedId] = useState(0);
 
 
-    const renderItem = ({item}: {item: Title}) => {
+    const renderItem = ({item, index}: {item: Title; index: number}) => {
         const handlePress = () => {
             router.push(`/details/${item.id}`);
         };
@@ -19,6 +19,7 @@ export default function Rail({rail}: {rail: RailModel}) {
         return (
                 <Pressable
                     focusable={true}
+                    hasTVPreferredFocus={railIndex === 0 && index === 0}
                     onPress={handlePress}
                     onFocus={() => setFocusedId(item.id)}
                     onBlur={() => setFocusedId(0)}

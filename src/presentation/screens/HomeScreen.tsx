@@ -12,9 +12,9 @@ export default function HomeScreen() {
         <AsyncStateView viewState={viewState}
             loadedChildren={
                 <View>
-                    {homeScreen?.map(rail => (
+                    {homeScreen?.map((rail, index) => (
                         <View key={rail.id}>
-                            <Rail key={rail.id} rail={rail} />
+                            <Rail key={rail.id} rail={rail} railIndex={index} />
                         </View>
                     ))}
                     <Button onPress={() => router.push("/my-list")} title="Go to My List!" />
