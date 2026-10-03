@@ -1,4 +1,4 @@
-import { WatchProgressRepository } from "@/data/player/WatchProgressRepository";
+import { watchProgressRepository } from "@/data/player/WatchProgressRepository";
 import { useEventListener } from "expo";
 import { useVideoPlayer } from "expo-video";
 import { useEffect, useRef, useState } from "react";
@@ -15,99 +15,105 @@ export enum PlayerState {
     Success
 }
 
-export const useVideoProgress = ({videoUrl, videoId}: UseVideoProgressProps) => {
-    const VIDEO_COMPLETED_THRESHOLD = 5;
-    const [ playerState, setPlayerState ] = useState<PlayerState>(PlayerState.Loading);
-    const [ initialTime, setInitialTime ] = useState<number | null>(null);
+/** Within this many seconds of the end, a video counts as finished and its progress is cleared. */
+const VIDEO_COMPLETED_THRESHOLD_SECONDS = 5;
+/** Save progress at most this often while playing. */
+const SAVE_INTERVAL_SECONDS = 3;
+/** If a retry isn't ready to play within this time, give up and show the error. */
+const RETRY_TIMEOUT_MS = 5000;
+
+export const useVideoProgress = ({ videoUrl, videoId }: UseVideoProgressProps) => {
+    const [playerState, setPlayerState] = useState<PlayerState>(PlayerState.Loading);
+    const [initialTime, setInitialTime] = useState<number | null>(null);
 
     const lastSavedTimeRef = useRef<number>(0);
     const hasSeekedOnLoad = useRef<boolean>(false);
     const justSeeked = useRef<boolean>(false);
     const retryCount = useRef<number>(0);
-    const retryTimeoutRef = useRef<number>(0);
+    const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-    function startRetryTimer() {
-        retryTimeoutRef.current = setTimeout(() => {
-            if (playerState !== PlayerState.Success) {
-                retryCount.current += 1;
-                setPlayerState(PlayerState.Error);
-            }
-        }, 5000);
-    };
-    
+    const player = useVideoPlayer(videoUrl, (p) => {
+        p.timeUpdateEventInterval = SAVE_INTERVAL_SECONDS;
+    });
+
+    // Load the saved resume position for this video.
     useEffect(() => {
-        const fetchSavedProgress = async () => {
-            try {
-                const savedProgress = await WatchProgressRepository.getProgress(videoId.toString());
-                setInitialTime(savedProgress ? savedProgress : 0);
-            } catch (error) {
-                console.error("failed to load start time", error);
-                setInitialTime(0);
-            } finally {
-                setPlayerState(PlayerState.Success);
-            }
-        };
-        fetchSavedProgress();
+        let cancelled = false;
+
+        (async () => {
+            const savedProgress = await watchProgressRepository.getProgress(videoId);
+            if (cancelled) return;
+            setInitialTime(savedProgress);
+            setPlayerState(PlayerState.Success);
+        })();
+
+        return () => { cancelled = true; };
     }, [videoId]);
 
-    
+    // Never leave a pending retry timer running after the screen unmounts.
+    useEffect(() => {
+        return () => clearTimeout(retryTimeoutRef.current);
+    }, []);
+
     const retryPlay = async () => {
+        hasSeekedOnLoad.current = false;
+        setPlayerState(PlayerState.Loading);
+
+        // If the player doesn't become ready in time, give up. Reaching "readyToPlay"
+        // clears this timer, so the callback doesn't need to read (possibly stale) state.
+        clearTimeout(retryTimeoutRef.current);
+        retryTimeoutRef.current = setTimeout(() => {
+            retryCount.current += 1;
+            setPlayerState(PlayerState.Error);
+        }, RETRY_TIMEOUT_MS);
+
         try {
             await player.replaceAsync(videoUrl);
         } catch (error) {
-            console.error(`couldn't retry contenct: ${error}`);
+            console.error("useVideoProgress: couldn't retry content", error);
         }
-        startRetryTimer();
-        hasSeekedOnLoad.current = false;
-        setPlayerState(PlayerState.Loading);
     };
 
-    const player = useVideoPlayer(videoUrl, (player) => {
-        player.timeUpdateEventInterval = 3.0;
-    });
+    useEventListener(player, "statusChange", (event) => {
+        const status = event.status.toLowerCase();
 
-    useEventListener(player, 'statusChange', (event) => {
-        if (event.status.toLowerCase() === "error") {
-            if (retryCount.current > 0) {
-                setPlayerState(PlayerState.Error);
-            } else {
-                setPlayerState(PlayerState.Retry);
-            }
-            
+        if (status === "error") {
+            clearTimeout(retryTimeoutRef.current);
+            // Offer one retry, then show the error.
+            setPlayerState(retryCount.current > 0 ? PlayerState.Error : PlayerState.Retry);
             retryCount.current += 1;
+            return;
         }
-        if (event.status.toLowerCase() === "readytoplay" && 
-            initialTime !== null && !hasSeekedOnLoad.current) {
-                clearTimeout(retryTimeoutRef.current);
-                hasSeekedOnLoad.current = true;
-                if (initialTime > 0) {
-                    player.currentTime = initialTime;
-                    justSeeked.current = true;
-                }
-                setPlayerState(PlayerState.Success);
+
+        if (status === "readytoplay" && initialTime !== null && !hasSeekedOnLoad.current) {
+            clearTimeout(retryTimeoutRef.current);
+            hasSeekedOnLoad.current = true;
+            if (initialTime > 0) {
+                // Resume where the viewer left off.
+                player.seekBy(initialTime - player.currentTime);
+                justSeeked.current = true;
             }
+            setPlayerState(PlayerState.Success);
+        }
     });
 
-    useEventListener(player, 'timeUpdate', async (event) => {
+    useEventListener(player, "timeUpdate", async (event) => {
+        // The first update after a seek reports the seek itself; don't save it.
         if (justSeeked.current) {
             justSeeked.current = false;
             return;
         }
 
-        try {
-            const currentTime = event.currentTime;
+        const currentTime = event.currentTime;
 
-            if (player.duration && currentTime > player.duration - VIDEO_COMPLETED_THRESHOLD) {
-                await WatchProgressRepository.removeProgress(videoId.toString());
-                return;
-            } 
-            
-            if (Math.abs(currentTime - lastSavedTimeRef.current) >= 3) {
-                lastSavedTimeRef.current = currentTime;
-                await WatchProgressRepository.saveProgress(videoId, currentTime);
-            }
-        } catch (error) {
-                console.error("couldn't update time", error);
+        if (player.duration && currentTime > player.duration - VIDEO_COMPLETED_THRESHOLD_SECONDS) {
+            await watchProgressRepository.removeProgress(videoId);
+            return;
+        }
+
+        if (Math.abs(currentTime - lastSavedTimeRef.current) >= SAVE_INTERVAL_SECONDS) {
+            lastSavedTimeRef.current = currentTime;
+            await watchProgressRepository.saveProgress(videoId, currentTime);
         }
     });
 

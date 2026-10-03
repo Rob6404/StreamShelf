@@ -1,8 +1,13 @@
 import { Rail } from "@/types/Rail.model";
-import { Title } from "@/types/Title";
 import { DataSource } from "../DataSource";
 
-class CatalogDataSource implements DataSource<Rail[]> {
+// Sample stream shared by every title in the fixture data.
+const SAMPLE_VIDEO_URL = "https://samplelib.com/mp4/sample-15s.mp4";
+
+/** Square test images at a fixed size, so posters load reliably on TV hardware. */
+const poster = (picsumId: number) => `https://picsum.photos/id/${picsumId}/300/300`;
+
+export class CatalogDataSource implements DataSource<Rail[]> {
     private cache: Rail[] = [];
 
     async get(): Promise<Rail[]> {
@@ -30,20 +35,20 @@ class CatalogDataSource implements DataSource<Rail[]> {
             {
                 id: 1, title: "Best of Bob's burgers",
                 titles: [
-                    { id: 1, description: "Bob binges on bulgogi", logo: "https://m.media-amazon.com/images/M/MV5BZTU1OGQ5MTctNjQyNy00NTRmLTg5OTktYzEyMWFlNTQyMWU4XkEyXkFqcGc@._V1_.jpg", metaData: { createdAt: new Date() } },
-                    { id: 2, description: "Lousie loses her lunch", logo: "https://pyxis.nymag.com/v1/imgs/da8/6b0/ff0bb8d1008d78afe9578a47f8f7cf1129-plight-before-christmas.rhorizontal.w700.jpg", metaData: { createdAt: new Date(-10000) } }
+                    { id: 1, description: "Bob binges on bulgogi", logo: poster(1015), videoUrl: SAMPLE_VIDEO_URL, metaData: { createdAt: new Date() } },
+                    { id: 2, description: "Lousie loses her lunch", logo: poster(1025), videoUrl: SAMPLE_VIDEO_URL, metaData: { createdAt: new Date(-10000) } }
                 ]
             },
             {
                 id: 2, title: "Here comes Halloween", titles: [
-                    { id: 3, description: "Jack is back", logo: "https://static.wikia.nocookie.net/disney/images/0/06/Profile_-_Jack_Skellington.jpeg", metaData: { createdAt: new Date(-20000) } },
-                    { id: 4, description: "Don't watch the tape", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQg4u_47yevbNFLW4PPvuLc_Df0khWiIvKmnot84FPKQmpMaeB1rZUfVRU&s=10", metaData: { createdAt: new Date(-30000) } }
+                    { id: 3, description: "Jack is back", logo: poster(1035), videoUrl: SAMPLE_VIDEO_URL, metaData: { createdAt: new Date(-20000) } },
+                    { id: 4, description: "Don't watch the tape", logo: poster(1043), videoUrl: SAMPLE_VIDEO_URL, metaData: { createdAt: new Date(-30000) } }
                 ]
             },
             {
                 id: 3, title: "Blizzard makes a comeback", titles: [
-                    { id: 5, description: "All hail the queen of blades", logo: "https://static.wikia.nocookie.net/starcraft/images/b/b6/InfestedKerrigan_SC2_Art4.jpg", metaData: { createdAt: new Date(-40000) } },
-                    { id: 6, description: "E.T.C.", logo: "https://static.wikia.nocookie.net/wowwiki/images/7/7c/Tauren_Marine1.jpg", metaData: { createdAt: new Date(-50000) } }
+                    { id: 5, description: "All hail the queen of blades", logo: poster(1050), videoUrl: SAMPLE_VIDEO_URL, metaData: { createdAt: new Date(-40000) } },
+                    { id: 6, description: "E.T.C.", logo: poster(1062), videoUrl: SAMPLE_VIDEO_URL, metaData: { createdAt: new Date(-50000) } }
                 ]
             }
         ];

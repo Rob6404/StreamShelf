@@ -1,60 +1,39 @@
 import { useMyList } from "@/domain/myList/MyListContext";
-import AsyncStateView from "../components/AsyncStateView";
-import { Image, Pressable, StyleSheet, View } from "react-native";
-import { useState } from "react";
 import { useRouter } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
+import AsyncStateView from "../components/AsyncStateView";
+import FocusablePoster from "../components/FocusablePoster";
 
 export default function MyListScreen() {
-    const myListContext = useMyList();
-    const [focusedId, setFocusedId] = useState(0);
+    const { myList, viewState } = useMyList();
     const router = useRouter();
 
-    const handlePress = (id: number) => {
-        router.push(`/details/${id}`);
-    };
-
     return (
-        <AsyncStateView viewState={myListContext.viewState}
+        <AsyncStateView viewState={viewState}
+            emptyChildren={
+                <View style={styles.message}>
+                    <Text>Your list is empty. Add titles from their details page.</Text>
+                </View>
+            }
             loadedChildren={
                 <View>
-                    {myListContext.myList?.map(title => (
-                        <View key={title.id}>
-                            <Pressable
-                                focusable={true}
-                                onPress={() => handlePress(title.id)}
-                                onFocus={() => setFocusedId(title.id)}
-                                onBlur={() => setFocusedId(0)}
-                                style={() => [
-                                            styles.imageContainer,
-                                            title.id == focusedId && styles.focusedStyle
-                                ]}>
-                                <Image
-                                source={{ uri: title.logo }}
-                                style={{ height: 100, width: 100 }}
-                                />
-                            </Pressable>
-                        </View>
+                    {myList.map((title, index) => (
+                        <FocusablePoster
+                            key={title.id}
+                            uri={title.logo}
+                            accessibilityLabel={`Open title ${title.id}`}
+                            hasTVPreferredFocus={index === 0}
+                            onPress={() => router.push(`/details/${title.id}`)}
+                        />
                     ))}
                 </View>
             }
         />
     );
 }
+
 const styles = StyleSheet.create({
-  imageContainer: {
-    borderRadius: 12,
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  image: {
-    width: 100,
-    height: 100,
-  },
-  focusedStyle: {
-    borderColor: '#007AFF'
-  },
-  imageFocused: {
-    opacity: 0.9,
-  }
+    message: {
+        padding: 24,
+    },
 });

@@ -7,25 +7,39 @@ import { useMyList } from "../myList/MyListContext";
 export function useTitleDetails(id: number) {
     const [titleDetails, setTitleDetails] = useState<(Title | null)>(null);
     const [viewState, setViewState] = useState<ViewState>(ViewState.Loading);
+    // Bumped by reload() to run the load effect again.
+    const [attempt, setAttempt] = useState(0);
     const myListContext = useMyList();
 
-    const loadData = async () => {
+    useEffect(() => {
+        let cancelled = false;
 
-        try {
+        (async () => {
+            try {
+                const title = (await catalogDataSource.get())
+                    .flatMap(rail => rail.titles)
+                    .find(t => t.id === id);
+                if (cancelled) return;
 
-            const title = (await catalogDataSource.get())
-            .flatMap(rail => rail.titles)
-            .find(title => title.id === id);
-
-            if (title) {
-                setTitleDetails(title);
-                setViewState(ViewState.Loaded);
-            } else {
-                setViewState(ViewState.Empty);
+                if (title) {
+                    setTitleDetails(title);
+                    setViewState(ViewState.Loaded);
+                } else {
+                    setViewState(ViewState.Empty);
+                }
+            } catch {
+                if (!cancelled) setViewState(ViewState.Error);
             }
-        } catch (error) {
-            setViewState(ViewState.Error);
-        }
+        })();
+
+        // Ignore a late response if the id changes or the screen unmounts first.
+        return () => { cancelled = true; };
+    }, [id, attempt]);
+
+    /** Called from the Retry button: show the spinner and load again. */
+    const reload = () => {
+        setViewState(ViewState.Loading);
+        setAttempt(a => a + 1);
     };
 
     const addToMyList = async () => {
@@ -33,7 +47,7 @@ export function useTitleDetails(id: number) {
             if (titleDetails) {
                 await myListContext.add(titleDetails);
             }
-        } catch (error) {
+        } catch {
             setViewState(ViewState.Error);
         }
     };
@@ -43,14 +57,17 @@ export function useTitleDetails(id: number) {
             if (titleDetails) {
                 await myListContext.remove(titleDetails.id);
             }
-        } catch (error) {
+        } catch {
             setViewState(ViewState.Error);
         }
     };
 
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    return { titleDetails, viewState, isMyList: myListContext.isInMyList(id), addToMyList, removeFromMyList };
+    return {
+        titleDetails,
+        viewState,
+        isMyList: myListContext.isInMyList(id),
+        addToMyList,
+        removeFromMyList,
+        reload,
+    };
 }

@@ -2,14 +2,12 @@ import { useLocalSearchParams } from "expo-router";
 import VideoPlayerScreen from "@/presentation/screens/VideoPlayerScreen";
 
 export default function VideoPlayerRoute() {
-    const { id } = useLocalSearchParams<{id: string}>();
+    const { id, url } = useLocalSearchParams<{ id: string; url: string }>();
     const videoId = Number(id);
-    
-    if (!videoId || !id) {
+
+    if (!videoId || !url) {
         return null;
     }
 
-    return <VideoPlayerScreen id={videoId} link={"https://samplelib.com/mp4/sample-15s.mp4"} />
+    return <VideoPlayerScreen id={videoId} link={url} />;
 }
-
-// 

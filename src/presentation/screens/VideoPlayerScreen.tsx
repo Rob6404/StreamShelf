@@ -1,32 +1,48 @@
 import { PlayerState, useVideoProgress } from "@/domain/player/useVideoProgress";
-import { VideoPlayer, VideoView } from "expo-video";
-import { ActivityIndicator, Button, Text, View } from "react-native";
+import { VideoView } from "expo-video";
+import { ActivityIndicator, Button, StyleSheet, Text, View } from "react-native";
 
-export default function VideoPlayerScreen({ id, link }: { id: number, link: string}) {
-        const { player, playerState, retryPlay } = useVideoProgress({ videoUrl: link, videoId: id });
+export default function VideoPlayerScreen({ id, link }: { id: number, link: string }) {
+    const { player, playerState, retryPlay } = useVideoProgress({ videoUrl: link, videoId: id });
 
-        if (playerState === PlayerState.Loading) {
+    switch (playerState) {
+        case PlayerState.Loading:
             return (
-                <View>
+                <View style={styles.center}>
                     <ActivityIndicator size="large" />
                 </View>
             );
-        } else if (playerState === PlayerState.Retry) {
-                return (
-                <View>
-                    <Button title="Retry?" onPress={ retryPlay } />
+        case PlayerState.Retry:
+            return (
+                <View style={styles.center}>
+                    <Text>The video couldn&apos;t start.</Text>
+                    <Button title="Try again" onPress={retryPlay} hasTVPreferredFocus={true} />
                 </View>
-                );
-        } else if (playerState === PlayerState.Error) {
-                return (
-                    <View>
-                        <Text>BROKEN</Text>
-                    </View>
-                );
-        }
-        return (
-                <VideoView 
+            );
+        case PlayerState.Error:
+            return (
+                <View style={styles.center}>
+                    <Text>This video can&apos;t be played right now.</Text>
+                </View>
+            );
+        case PlayerState.Success:
+            return (
+                <VideoView
+                    style={styles.video}
                     player={player}
-                    fullscreenOptions={{ enable: true }}/>
-        );
+                    fullscreenOptions={{ enable: true }} />
+            );
+    }
 }
+
+const styles = StyleSheet.create({
+    center: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 12,
+    },
+    video: {
+        flex: 1,
+    },
+});

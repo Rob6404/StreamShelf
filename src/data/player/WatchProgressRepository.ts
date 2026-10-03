@@ -1,4 +1,5 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AsyncStorageProvider } from "../storage/AsyncStorageProvider";
+import { StorageProvider } from "../storage/StorageProvider";
 
 export interface WatchProgressItem {
     videoId: number;
@@ -6,69 +7,55 @@ export interface WatchProgressItem {
     lastUpdated: number;
 }
 
-const PREFIX = 'watch_progress:';
+/**
+ * Persists where the viewer stopped watching each video, so playback can resume.
+ * Goes through StorageProvider like MyListRepository, so the storage library
+ * stays swappable and tests can inject a fake.
+ */
+export class WatchProgressRepository {
+    private keyPrefix = "watch_progress:";
 
-export const WatchProgressRepository = {
+    constructor(private storageProvider: StorageProvider = new AsyncStorageProvider()) {}
 
     async saveProgress(videoId: number, currentTime: number): Promise<void> {
         try {
-        const key = `${PREFIX}${videoId}`;
-        const item: WatchProgressItem = {
-            videoId,
-            currentTime,
-            lastUpdated: Date.now()
-        };
-        await AsyncStorage.setItem(key, JSON.stringify(item));
+            const item: WatchProgressItem = { videoId, currentTime, lastUpdated: Date.now() };
+            await this.storageProvider.save(this.keyPrefix + videoId, item);
         } catch (error) {
-        console.error(`Repository: Failed to save progress for ${videoId}`, error);
+            console.error(`WatchProgressRepository: failed to save progress for ${videoId}`, error);
         }
-    },
-
-  async getProgress(videoId: string): Promise<number> {
-    try {
-      const key = `${PREFIX}${videoId}`;
-      const data = await AsyncStorage.getItem(key);
-      if (data) {
-        const item: WatchProgressItem = JSON.parse(data);
-        return item.currentTime;
-      }
-      return 0;
-    } catch (error) {
-      console.error(`Repository: Failed to get progress for ${videoId}`, error);
-      return 0;
     }
-  },
 
-  async removeProgress(videoId: string): Promise<void> {
-    try {
-      const key = `${PREFIX}${videoId}`;
-      await AsyncStorage.removeItem(key);
-    } catch (error) {
-      console.error(`Repository: Failed to remove progress for ${videoId}`, error);
-    }
-  },
-
-  async getAllProgress(): Promise<WatchProgressItem[]> {
-    try {
-      const allKeys = await AsyncStorage.getAllKeys();
-      const progressKeys = allKeys.filter((key) => key.startsWith(PREFIX));
-      
-      if (progressKeys.length === 0) return [];
-
-      const pairs = await AsyncStorage.multiGet(progressKeys);
-      const items: WatchProgressItem[] = [];
-
-      for (const [_, value] of pairs) {
-        if (value) {
-          items.push(JSON.parse(value));
+    /** Returns the saved position in seconds, or 0 when there is none. */
+    async getProgress(videoId: number): Promise<number> {
+        try {
+            const item = await this.storageProvider.get<WatchProgressItem>(this.keyPrefix + videoId);
+            return item?.currentTime ?? 0;
+        } catch (error) {
+            console.error(`WatchProgressRepository: failed to get progress for ${videoId}`, error);
+            return 0;
         }
-      }
-
-      // Sort by recently watched first
-      return items.sort((a, b) => b.lastUpdated - a.lastUpdated);
-    } catch (error) {
-      console.error('Repository: Failed to fetch all progress history', error);
-      return [];
     }
-  },
-};
+
+    async removeProgress(videoId: number): Promise<void> {
+        try {
+            await this.storageProvider.delete(this.keyPrefix + videoId);
+        } catch (error) {
+            console.error(`WatchProgressRepository: failed to remove progress for ${videoId}`, error);
+        }
+    }
+
+    /** All saved progress, most recently watched first. */
+    async getAllProgress(): Promise<WatchProgressItem[]> {
+        try {
+            const keys = await this.storageProvider.getAllKeys(this.keyPrefix);
+            const items = await this.storageProvider.getAll<WatchProgressItem>(keys);
+            return items.sort((a, b) => b.lastUpdated - a.lastUpdated);
+        } catch (error) {
+            console.error("WatchProgressRepository: failed to fetch progress history", error);
+            return [];
+        }
+    }
+}
+
+export const watchProgressRepository = new WatchProgressRepository();

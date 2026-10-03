@@ -1,4 +1,4 @@
-import { useHomeScreen } from "@/domain/catalog/useCatalog";
+import { useHomeScreen } from "@/domain/catalog/useHomeScreen";
 import { Button, View } from "react-native";
 import AsyncStateView from "../components/AsyncStateView";
 import Rail from "../components/Rail";
@@ -6,18 +6,17 @@ import { useRouter } from "expo-router";
 
 export default function HomeScreen() {
     const router = useRouter();
-    const { homeScreen, viewState } = useHomeScreen();
+    const { homeScreen, viewState, reload } = useHomeScreen();
 
     return (
         <AsyncStateView viewState={viewState}
+            onRetry={reload}
             loadedChildren={
                 <View>
-                    {homeScreen?.map((rail, index) => (
-                        <View key={rail.id}>
-                            <Rail key={rail.id} rail={rail} railIndex={index} />
-                        </View>
+                    {homeScreen.map((rail, index) => (
+                        <Rail key={rail.id} rail={rail} railIndex={index} />
                     ))}
-                    <Button onPress={() => router.push("/my-list")} title="Go to My List!" />
+                    <Button onPress={() => router.push("/my-list")} title="My List" />
                 </View>
             }
         />
