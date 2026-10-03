@@ -4,7 +4,7 @@ Take-home project for The Weather Channel.
 
 ## Architectural Diagram
 
-![StreamShelf architecture](docs/streamshelf-architecture.png)
+![StreamShelf architecture](docs/streamshelf-architecture.svg)
 
 ## Getting Started
 
